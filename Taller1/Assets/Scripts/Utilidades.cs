@@ -13,7 +13,7 @@ public class Utilidades: MonoBehaviour
     void Start()
     {
 
-        path = Path.Combine(Application.streamingAssetsPath, "productos");
+        path = Path.Combine(Application.streamingAssetsPath, "productos.txt");
         contenidoTexto = File.ReadAllText(path, Encoding.UTF8);
 
         Debug.Log(contenidoTexto);
