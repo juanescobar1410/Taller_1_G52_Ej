@@ -25,26 +25,60 @@ public class UsaProducto : MonoBehaviour
         {
             string contenidoTexto = File.ReadAllText(filePath);
 
-            
-                try
+
+            try
+            {
+
+
+                //string[] lineaproductos = contenidoTexto.Split('|');
+
+
+                //Producto p = new Producto(
+                //    lineaproductos[0], lineaproductos[1], lineaproductos[2], double.Parse(lineaproductos[3]), double.Parse(lineaproductos[4]), int.Parse(lineaproductos[5])
+
+                //);
+
+                //listaP.Add(p);
+                string[] lineas = contenidoTexto.Split('\n');
+
+                foreach (string linea in lineas)
                 {
-                   
+                    if (string.IsNullOrWhiteSpace(linea)) continue;
+                    string[] datos = linea.Split('|');
 
-                    string[] lineaproductos = contenidoTexto.Split("|");
-
-
-                Producto p = new Producto(
-                    lineaproductos[1], lineaproductos[2], lineaproductos[3], double.Parse(lineaproductos[4]), double.Parse(lineaproductos[5]), int.Parse(lineaproductos[6])
-
-                );
+                    Producto p = new Producto(
+                        datos[0], datos[1], datos[2],
+                        double.Parse(datos[3]), double.Parse(datos[4]), int.Parse(datos[5])
+                    );
 
                     listaP.Add(p);
-                    Debug.Log("Producto leido" + listaP);
                 }
-                catch (System.Exception e)
+
+
+
+
+
+
+                //Debug.Log("Producto leido" + listaP);
+
+                for (int i = 0; i < listaP.Count; i++)
                 {
-                    Debug.LogError("Error al leer el texto" + e.Message);
+                    Debug.Log(
+                        " ID: " + listaP[i].Id +
+                        " | Nombre: " + listaP[i].Nombre +
+                        " | Tipo: " + listaP[i].Tipo +
+                        " | Peso: " + listaP[i].Peso +
+                        " | Precio: " + listaP[i].Precio +
+                        " | Tiempo: " + listaP[i].Tiempo
+                    );
                 }
+
+
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Error al leer el texto" + e.Message);
+            }
         }
     }
 
