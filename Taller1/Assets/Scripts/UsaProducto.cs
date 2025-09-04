@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 public class UsaProducto : MonoBehaviour
 {
-    List<Producto> listaP = new List<Producto>();
+    public List<Producto> listaP = new List<Producto>();
 
 
 
@@ -23,22 +23,32 @@ public class UsaProducto : MonoBehaviour
 
 
 
-        if (File.Exists(filePath))
+        if (File.Exists(filePath) )
         {
-
-
-            try
+            string[] lineas = File.ReadAllLines(filePath);
+            foreach (string linea in lineas)
             {
-                string contenidoTexto = File.ReadAllText(filePath);
-                Debug.Log(contenidoTexto);
+                if (string.IsNullOrWhiteSpace(linea)) continue;
 
-                Producto p = new Producto(contenidoTexto[1], contenidoTexto[2], contenidoTexto[3]);
+                try
+                {
+                    string contenidoTexto = File.ReadAllText(filePath);
+                    Debug.Log(contenidoTexto);
 
 
-                Debug.Log("Producto leido" + p.Id);
-                listaP.Add(p);
 
-            }
+                    string[] lineaproductos = linea.Split("|");
+                    string.IsNullOrWhiteSpace(contenidoTexto);
+
+                    Producto p = new Producto(lineaproductos[1], lineaproductos[2], lineaproductos[3], double.Parse(lineaproductos[4]), double.Parse(lineaproductos[5]), int.Parse(lineaproductos[0]));
+
+                    listaP.Add(p);
+                    Debug.Log("Producto leido" + listaP.Count);
+
+
+                }
+
+            }        
             catch (System.Exception e)
             {
                 Debug.LogError("Error al leer el texto" + e.Message);
