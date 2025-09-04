@@ -24,12 +24,12 @@ public class Contador : MonoBehaviour
         {
             tiempoTranscurrido += Time.deltaTime;
         }
-        
+
         TimeSpan tiempo = TimeSpan.FromSeconds(tiempoTranscurrido);
 
         tiempoTexto.text = tiempo.ToString(@"mm\:ss");
     }
-    
+
     public void IniciarContador()
     {
         activo = true;
