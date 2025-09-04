@@ -1,8 +1,9 @@
-using UnityEngine;
 using PackageProductos;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.UIElements;
 public class UsaProducto : MonoBehaviour
 {
     public List<Producto> listaP = new List<Producto>();
@@ -15,46 +16,36 @@ public class UsaProducto : MonoBehaviour
     }
 
 
+
     public void CargaArchivo()
     {
-
         string filePath = Path.Combine(Application.streamingAssetsPath, "productos.txt");
 
-
-
-
-        if (File.Exists(filePath) )
+        if (File.Exists(filePath))
         {
-            string[] lineas = File.ReadAllLines(filePath);
-            foreach (string linea in lineas)
-            {
-                if (string.IsNullOrWhiteSpace(linea)) continue;
+            string contenidoTexto = File.ReadAllText(filePath);
 
+            
                 try
                 {
-                    string contenidoTexto = File.ReadAllText(filePath);
-                    Debug.Log(contenidoTexto);
+                   
+
+                    string[] lineaproductos = contenidoTexto.Split("|");
 
 
+                Producto p = new Producto(
+                    lineaproductos[1], lineaproductos[2], lineaproductos[3], double.Parse(lineaproductos[4]), double.Parse(lineaproductos[5]), int.Parse(lineaproductos[6])
 
-                    string[] lineaproductos = linea.Split("|");
-                    string.IsNullOrWhiteSpace(contenidoTexto);
-
-                    Producto p = new Producto(lineaproductos[1], lineaproductos[2], lineaproductos[3], double.Parse(lineaproductos[4]), double.Parse(lineaproductos[5]), int.Parse(lineaproductos[0]));
+                );
 
                     listaP.Add(p);
-                    Debug.Log("Producto leido" + listaP.Count);
-
-
+                    Debug.Log("Producto leido" + listaP);
                 }
-
-            }        
-            catch (System.Exception e)
-            {
-                Debug.LogError("Error al leer el texto" + e.Message);
-            }
+                catch (System.Exception e)
+                {
+                    Debug.LogError("Error al leer el texto" + e.Message);
+                }
         }
-
     }
 
 
