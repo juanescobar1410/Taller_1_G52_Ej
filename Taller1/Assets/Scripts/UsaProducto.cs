@@ -1,12 +1,109 @@
-Ôªøusing UnityEngine;
+//using PackageProductos;
+//using System.Collections.Generic;
+//using System.IO;
+//using Unity.VisualScripting;
+//using UnityEngine;
+//using UnityEngine.UIElements;
+//public class UsaProducto : MonoBehaviour
+//{
+//    public List<Producto> listaP = new List<Producto>();
+
+
+
+//    public void Start()
+//    {
+//        CargaArchivo();
+//    }
+
+
+
+//    public void CargaArchivo()
+//    {
+//        string filePath = Path.Combine(Application.streamingAssetsPath, "productos.txt");
+
+//        if (File.Exists(filePath))
+//        {
+//            string contenidoTexto = File.ReadAllText(filePath);
+
+
+//            try
+//            {
+
+
+//                //string[] lineaproductos = contenidoTexto.Split('|');
+
+
+//                //Producto p = new Producto(
+//                //    lineaproductos[0], lineaproductos[1], lineaproductos[2], double.Parse(lineaproductos[3]), double.Parse(lineaproductos[4]), int.Parse(lineaproductos[5])
+
+//                //);
+
+//                //listaP.Add(p);
+//                string[] lineas = contenidoTexto.Split('\n');
+
+//                foreach (string linea in lineas)
+//                {
+//                    if (string.IsNullOrWhiteSpace(linea)) continue;
+//                    string[] datos = linea.Split('|');
+
+//                    Producto p = new Producto(
+//                        datos[0], datos[1], datos[2],
+//                        double.Parse(datos[3]), double.Parse(datos[4]), int.Parse(datos[5])
+//                    );
+
+//                    listaP.Add(p);
+//                }
+
+
+
+
+
+
+//                //Debug.Log("Producto leido" + listaP);
+
+//                for (int i = 0; i < listaP.Count; i++)
+//                {
+//                    Debug.Log(
+//                        " ID: " + listaP[i].Id +
+//                        " | Nombre: " + listaP[i].Nombre +
+//                        " | Tipo: " + listaP[i].Tipo +
+//                        " | Peso: " + listaP[i].Peso +
+//                        " | Precio: " + listaP[i].Precio +
+//                        " | Tiempo: " + listaP[i].Tiempo
+//                    );
+//                }
+
+
+//            }
+//            catch (System.Exception e)
+//            {
+//                Debug.LogError("Error al leer el texto" + e.Message);
+//            }
+//        }
+//    }
+
+
+
+
+
+
+
+
+//}
+
 using PackageProductos;
-using System.IO;
 using System.Collections.Generic;
-using System.Globalization;
+using System.IO;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UsaProducto : MonoBehaviour
 {
-    List<Producto> listaP = new List<Producto>();
+    public List<Producto> listaP = new List<Producto>();   // productos cargados desde el archivo
+    private List<Producto> pilaProductos = new List<Producto>(); // productos generados (apilados)
+
+    private bool generando = false;
 
     public void Start()
     {
@@ -16,50 +113,89 @@ public class UsaProducto : MonoBehaviour
     public void CargaArchivo()
     {
         string filePath = Path.Combine(Application.streamingAssetsPath, "productos.txt");
+
         if (File.Exists(filePath))
         {
+            string contenidoTexto = File.ReadAllText(filePath);
+
             try
             {
-                string[] lineas = File.ReadAllLines(filePath); // üëà leer por l√≠neas
+                string[] lineas = contenidoTexto.Split('\n');
+
                 foreach (string linea in lineas)
                 {
-                    if (string.IsNullOrWhiteSpace(linea)) continue; // evitar l√≠neas vac√≠as
-
+                    if (string.IsNullOrWhiteSpace(linea)) continue;
                     string[] datos = linea.Split('|');
-                    if (datos.Length >= 6)
-                    {
-                        if (double.TryParse(datos[3], out double valor1) &&
-                            double.TryParse(datos[4], out double valor2) &&
-                            int.TryParse(datos[5], out int cantidad))
-                        {
-                            var p = new Producto(
-                                datos[0],
-                                datos[1],
-                                datos[2],
-                                valor1,
-                                valor2,
-                                cantidad
-                            );
-                            Debug.Log("Producto le√≠do: " + p.Id);
-                            listaP.Add(p);
-                        }
-                        else
-                        {
-                            Debug.LogError($"Error al convertir n√∫meros en la l√≠nea: {linea}");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogError($"Datos insuficientes en la l√≠nea: {linea}");
-                    }
+
+                    Producto p = new Producto(
+                        datos[0], datos[1], datos[2],
+                        double.Parse(datos[3]), double.Parse(datos[4]), int.Parse(datos[5])
+                    );
+
+                    listaP.Add(p);
                 }
+
+                Debug.Log("Productos cargados: " + listaP.Count);
             }
             catch (System.Exception e)
             {
                 Debug.LogError("Error al leer el texto: " + e.Message);
             }
         }
-        // Agregar la llave de cierre faltante para la clase UsaProducto
     }
 
-}   
+    // MÈtodo que se llamar· desde el botÛn "Iniciar"
+    public void IniciarGeneracion()
+    {
+        if (!generando)
+        {
+            generando = true;
+            StartCoroutine(GenerarProductos());
+        }
+    }
+
+    // MÈtodo opcional para detener
+    public void DetenerGeneracion()
+    {
+        generando = false;
+        StopAllCoroutines();
+    }
+
+    // Corutina que genera productos aleatorios cada segundo
+    private System.Collections.IEnumerator GenerarProductos()
+    {
+        while (generando)
+        {
+            int cantidad = Random.Range(1, 4); // entre 1 y 3 productos
+
+            for (int i = 0; i < cantidad; i++)
+            {
+                // Elegir un producto aleatorio de la lista cargada
+                Producto elegido = listaP[Random.Range(0, listaP.Count)];
+
+                // Crear una copia para no modificar el cat·logo
+                Producto copia = new Producto(
+                    elegido.Id,
+                    elegido.Nombre,
+                    elegido.Tipo,
+                    elegido.Peso,
+                    elegido.Precio,
+                    elegido.Tiempo
+                );
+
+                pilaProductos.Add(copia);
+
+                Debug.Log(
+                    "Producto apilado ? ID: " + copia.Id +
+                    " | Nombre: " + copia.Nombre +
+                    " | Tipo: " + copia.Tipo +
+                    " | Peso: " + copia.Peso +
+                    " | Precio: " + copia.Precio +
+                    " | Tiempo: " + copia.Tiempo
+                );
+            }
+
+            yield return new WaitForSeconds(1f); // espera 1 segundo antes de repetir
+        }
+    }
+}
