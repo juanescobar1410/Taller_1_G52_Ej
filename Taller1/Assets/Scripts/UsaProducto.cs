@@ -187,7 +187,7 @@ public class UsaProducto : MonoBehaviour
         pilaText.text = mostrar;
     }
 
-    private void calcularMostrarResultados()
+    public void calcularMostrarResultados()
     {
 
         float promedioTiempo = totalDespachados > 0 ? tiempoTotalDespachados / totalDespachados : 0f;
@@ -204,6 +204,10 @@ public class UsaProducto : MonoBehaviour
             }
         }
 
+        string resultado = $"Total de productos generados: {totalGenerados}\n" +
+                           $"Total de productos despachados: {totalDespachados}\n" +
+                           $"Tiempo promedio de despacho: {promedioTiempo:F2} segundos\n" +
+                           $"Tipo de producto más despachado: {tipoMasDespachado} ({maxDespachados} unidades)";
 
 
     }
