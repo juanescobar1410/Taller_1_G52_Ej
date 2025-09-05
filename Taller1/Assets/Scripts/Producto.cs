@@ -42,7 +42,7 @@ namespace PackageProductos
 
         public override string ToString()
         {
-            return $"Producto[ID={id}, Nombre={nombre}, Tipo={tipo}, Peso={peso}, Precio={precio}, Tiempo={tiempo}]";
+            return $"ID: {id}, Nombre: {nombre}, Tipo: {tipo}, Peso: {peso}, Precio: {precio}, Tiempo: {tiempo}";
         }
 
 
