@@ -136,6 +136,7 @@ public class UsaProducto : MonoBehaviour
                 " | Precio: " + despachado.Precio +
                 " | Tiempo: " + despachado.Tiempo
             );
+            ActualizarTextoPila();
         }
         else
         {
