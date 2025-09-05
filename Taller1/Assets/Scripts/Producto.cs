@@ -40,6 +40,12 @@ namespace PackageProductos
             this.tiempo = tiempo;
         }
 
+        public override string ToString()
+        {
+            return $"Producto[ID={id}, Nombre={nombre}, Tipo={tipo}, Peso={peso}, Precio={precio}, Tiempo={tiempo}]";
+        }
+
+
     }
 
 }
