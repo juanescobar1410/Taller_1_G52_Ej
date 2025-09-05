@@ -187,6 +187,26 @@ public class UsaProducto : MonoBehaviour
         pilaText.text = mostrar;
     }
 
+    private void calcularMostrarResultados()
+    {
+
+        float promedioTiempo = totalDespachados > 0 ? tiempoTotalDespachados / totalDespachados : 0f;
+
+        string tipoMasDespachado = "";
+        int maxDespachados = 0;
+
+        foreach (var kvp in despachoporTipos)
+        {
+            if (kvp.Value > maxDespachados)
+            {
+                maxDespachados = kvp.Value;
+                tipoMasDespachado = kvp.Key;
+            }
+        }
+
+
+
+    }
 
 
 }
