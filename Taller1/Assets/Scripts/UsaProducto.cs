@@ -14,31 +14,16 @@ public class UsaProducto : MonoBehaviour
     public TMP_Text pilaText;
 
     private bool generando = false;
-    private bool despachando = false;
+    //private bool despachando = false;
     private int totalDespachados = 0;
     private float tiempoTotalDespachados = 0f;
     private Dictionary<string, int> despachoporTipos = new Dictionary<string, int>();
-
-    private float tiempoSiguienteDespacho = 0f;
 
 
     public void Start()
     {
         CargaArchivo();
-
-        despachoporTipos.Add("Basico", 0);
-        despachoporTipos.Add("Fragil", 0);
-        despachoporTipos.Add("Pesado", 0);
-        
         ActualizarTextoPila();
-    }
-
-    public void Update()
-    {
-        if (despachando && Time.time >= tiempoSiguienteDespacho && pilaProductos.Count > 0)
-        {
-            DespacharProducto();
-        }
     }
 
     public void CargaArchivo()
@@ -81,9 +66,6 @@ public class UsaProducto : MonoBehaviour
         if (!generando)
         {
             generando = true;
-            despachando = true;
-
-            tiempoSiguienteDespacho = Time.time + 1f; 
             StartCoroutine(GenerarProductos());
         }
     }
@@ -154,13 +136,7 @@ public class UsaProducto : MonoBehaviour
                 " | Precio: " + despachado.Precio +
                 " | Tiempo: " + despachado.Tiempo
             );
-
-            tiempoSiguienteDespacho = Time.time + 1f;
             ActualizarTextoPila();
-            Debug.Log("Total despachados: " + totalDespachados);
-            Debug.Log("Tiempo total despachado: " + tiempoTotalDespachados + " segundos");
-
-
         }
         else
         {
