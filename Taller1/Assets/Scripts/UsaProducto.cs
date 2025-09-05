@@ -2,6 +2,7 @@
 using PackageProductos;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -10,6 +11,7 @@ public class UsaProducto : MonoBehaviour
 {
     public List<Producto> listaP = new List<Producto>();   // productos cargados desde el archivo
     public Stack<Producto> pilaProductos = new Stack<Producto>(); // productos generados (apilados)
+    public TMP_Text pilaText;
 
     private bool generando = false;
     //private bool despachando = false;
@@ -21,6 +23,7 @@ public class UsaProducto : MonoBehaviour
     public void Start()
     {
         CargaArchivo();
+        ActualizarTextoPila();
     }
 
     public void CargaArchivo()
@@ -98,15 +101,10 @@ public class UsaProducto : MonoBehaviour
 
                 pilaProductos.Push(copia);
 
-                Debug.Log(
-                    "Producto apilado ? ID: " + copia.Id +
-                    " | Nombre: " + copia.Nombre +
-                    " | Tipo: " + copia.Tipo +
-                    " | Peso: " + copia.Peso +
-                    " | Precio: " + copia.Precio +
-                    " | Tiempo: " + copia.Tiempo
-                );
+                
             }
+
+            ActualizarTextoPila();
 
             yield return new WaitForSeconds(1f); // espera 1 segundo antes de repetir
         }
@@ -145,4 +143,17 @@ public class UsaProducto : MonoBehaviour
         }
 
     }
+    public void ActualizarTextoPila()
+    {
+        string mostrar = "";
+
+        foreach (var item in pilaProductos)
+        {
+            mostrar += item.ToString() + "\n";
+        }
+        pilaText.text = mostrar;
+    }
+
+
+
 }
