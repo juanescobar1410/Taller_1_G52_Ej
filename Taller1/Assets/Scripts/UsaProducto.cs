@@ -16,6 +16,8 @@ public class UsaProducto : MonoBehaviour
     private bool generando = false;
     private bool despachando = false;
     private int totalDespachados = 0;
+    private int totalGenerados = 0;
+    private int totalNoDespachados = 0;
     private float tiempoTotalDespachados = 0f;
     private Dictionary<string, int> despachoporTipos = new Dictionary<string, int>();
 
@@ -92,7 +94,17 @@ public class UsaProducto : MonoBehaviour
     public void DetenerGeneracion()
     {
         generando = false;
+        despachando = false;
+        totalNoDespachados = totalGenerados - totalDespachados; //no se en donde poner esto);
         StopAllCoroutines();
+        Debug.Log("Total Generados: " + totalGenerados);
+        Debug.Log("Total despachados: " + totalDespachados);
+        Debug.Log("Tiempo total despachado: " + tiempoTotalDespachados + " segundos");
+        Debug.Log("Total No Despachados: " + totalNoDespachados);
+        foreach (KeyValuePair<string, int> kvp in despachoporTipos)
+        {
+            Debug.Log("Total despachados por tipo: " + kvp.Key + " | Valor: " + kvp.Value);
+        }
     }
 
     // Corutina que genera productos aleatorios cada segundo
@@ -118,12 +130,12 @@ public class UsaProducto : MonoBehaviour
                 );
 
                 pilaProductos.Push(copia);
+                totalGenerados++;
 
-                
             }
 
             ActualizarTextoPila();
-
+            
             yield return new WaitForSeconds(1f); // espera 1 segundo antes de repetir
         }
     }
@@ -157,9 +169,10 @@ public class UsaProducto : MonoBehaviour
 
             tiempoSiguienteDespacho = Time.time + 1f;
             ActualizarTextoPila();
-            Debug.Log("Total despachados: " + totalDespachados);
-            Debug.Log("Tiempo total despachado: " + tiempoTotalDespachados + " segundos");
 
+             
+
+            
 
         }
         else
