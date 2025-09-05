@@ -14,10 +14,12 @@ public class UsaProducto : MonoBehaviour
     public TMP_Text pilaText;
 
     private bool generando = false;
-    //private bool despachando = false;
+    private bool despachando = false;
     private int totalDespachados = 0;
     private float tiempoTotalDespachados = 0f;
     private Dictionary<string, int> despachoporTipos = new Dictionary<string, int>();
+
+    private float tiempoSiguienteDespacho = 0f;
 
 
     public void Start()
@@ -136,11 +138,18 @@ public class UsaProducto : MonoBehaviour
                 " | Precio: " + despachado.Precio +
                 " | Tiempo: " + despachado.Tiempo
             );
+
+            tiempoSiguienteDespacho = Time.time + despachado.Tiempo;
+            ActualizarTextoPila();
+        
         }
         else
         {
             Debug.Log("No hay productos para despachar.");
         }
+
+        
+
 
     }
     public void ActualizarTextoPila()
