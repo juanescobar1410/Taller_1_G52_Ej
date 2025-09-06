@@ -239,7 +239,7 @@ public class UsaProducto : MonoBehaviour
         resultado += $"Productos no Despachados = {totalNoDespachados}\n\n";
 
         resultado += $"TIEMPOS\n";
-        resultado += $"Tiempo total generacion = {TiempoTotalGeneracion:F2} segundos\n";
+        resultado += $"Tiempo total de generacion = {TiempoTotalGeneracion:F2} segundos\n";
         resultado += $"Tiempo total despacho = {tiempoTotalDespachados:F2} segundos\n";
         resultado += $"Tiempo total de generacion de productos = {TiempoTranscurrido:F2} segundos\n";
 

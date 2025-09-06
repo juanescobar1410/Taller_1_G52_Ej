@@ -2083,6 +2083,7 @@ MonoBehaviour:
   TextoProductos: {fileID: 1907502528}
   "TextoTama\xF1o": {fileID: 2073386480}
   TextoDespachados: {fileID: 50215453}
+  TextoGenerados: {fileID: 1904322846}
   TextoTope: {fileID: 1839363716}
   TextoContador: {fileID: 899136294}
 --- !u!1 &1839363714
