@@ -17,6 +17,7 @@ public class UsaProducto : MonoBehaviour
     private bool despachando = false;
     private int totalDespachados = 0;
     private int totalGenerados = 0;
+    private int totalNoDespachados = 0;
     private float tiempoTotalDespachados = 0f;
     private Dictionary<string, int> despachoporTipos = new Dictionary<string, int>();
 
@@ -94,8 +95,10 @@ public class UsaProducto : MonoBehaviour
     {
         generando = false;
         despachando = false;
+        totalNoDespachados = totalGenerados - totalDespachados; //no se en donde poner esto);
         StopAllCoroutines();
-        Debug.Log("Total Generados: " + totalGenerados);
+        calcularMostrarResultados();
+
     }
 
     // Corutina que genera productos aleatorios cada segundo
@@ -150,24 +153,8 @@ public class UsaProducto : MonoBehaviour
                 despachoporTipos[despachado.Tipo] = 1;
             }
 
-            Debug.Log("Producto despachado ? ID: " + despachado.Id +
-                " | Nombre: " + despachado.Nombre +
-                " | Tipo: " + despachado.Tipo +
-                " | Peso: " + despachado.Peso +
-                " | Precio: " + despachado.Precio +
-                " | Tiempo: " + despachado.Tiempo
-            );
-
             tiempoSiguienteDespacho = Time.time + 1f;
             ActualizarTextoPila();
-            Debug.Log("Total despachados: " + totalDespachados);
-            Debug.Log("Tiempo total despachado: " + tiempoTotalDespachados + " segundos");
-            foreach (KeyValuePair<string, int> kvp in despachoporTipos)
-            {
-                Debug.Log("Total despachados por tipo: " + kvp.Key + " | Valor: " + kvp.Value);
-            }
-
-            
 
         }
         else
@@ -187,6 +174,42 @@ public class UsaProducto : MonoBehaviour
         pilaText.text = mostrar;
     }
 
+    public void calcularMostrarResultados()
+    {
+
+        float promedioTiempo = totalDespachados > 0 ? tiempoTotalDespachados / totalDespachados : 0f;
+
+        string tipoMasDespachado = "";
+        int maxDespachados = 0;
+
+        foreach (var kvp in despachoporTipos)
+        {
+            if (kvp.Value > maxDespachados)
+            {
+                maxDespachados = kvp.Value;
+                tipoMasDespachado = kvp.Key;
+            }
+        }
+
+        string resultado = $" RESULTADOS \n";
+        resultado += $"total_generados={totalGenerados}\n";
+        resultado += $"total_despachados={totalDespachados}\n";
+        resultado += $"tamaño_de_la_pila={pilaProductos.Count}\n";
+        resultado += $"tiempo_promedio_despacho={promedioTiempo:F2}\n\n";
+
+        resultado += $" DESPACHADOS_POR_TIPO\n";
+        resultado += $"despachados_por_tipo=Basico:{despachoporTipos["Basico"]},Fragil:{despachoporTipos["Fragil"]},Pesado:{despachoporTipos["Pesado"]}\n";
+        resultado += $"tipo_mas_despachado={tipoMasDespachado}\n\n";
+
+        resultado += $" TIEMPOS\n";
+        resultado += $"tiempo_total_generacion={totalGenerados:F2} segundos\n";
+        resultado += $"tiempo_total_despacho={tiempoTotalDespachados:F2} segundos";
+
+        Debug.Log(resultado);
+
+
+
+    }
 
 
 }
