@@ -97,6 +97,7 @@ public class UsaProducto : MonoBehaviour
     public void IniciarGeneracion()
     {
         ContadorActivo = true;
+        TiempoTranscurrido = 0f;
         if (!generando)
         {
             generando = true;
@@ -197,6 +198,7 @@ public class UsaProducto : MonoBehaviour
     {
 
         float promedioTiempo = totalDespachados > 0 ? tiempoTotalDespachados / totalDespachados : 0f;
+        float productosNoDespachados = totalGenerados - totalDespachados;
 
         string tipoMasDespachado = "";
         int maxDespachados = 0;
@@ -210,19 +212,22 @@ public class UsaProducto : MonoBehaviour
             }
         }
 
-        string resultado = $" RESULTADOS \n";
-        resultado += $"total_generados={totalGenerados}\n";
-        resultado += $"total_despachados={totalDespachados}\n";
-        resultado += $"tamaño_de_la_pila={pilaProductos.Count}\n";
-        resultado += $"tiempo_promedio_despacho={promedioTiempo:F2}\n\n";
+        string resultado = $"RESULTADOS \n";
+        resultado += $"Total generados = {totalGenerados}\n";
+        resultado += $"Total despachados = {totalDespachados}\n";
+        resultado += $"Tamaño de la pila = {pilaProductos.Count}\n";
+        resultado += $"Tiempo promedio despacho = {promedioTiempo:F2}\n\n";
+        
 
-        resultado += $" DESPACHADOS_POR_TIPO\n";
-        resultado += $"despachados_por_tipo=Basico:{despachoporTipos["Basico"]},Fragil:{despachoporTipos["Fragil"]},Pesado:{despachoporTipos["Pesado"]}\n";
-        resultado += $"tipo_mas_despachado={tipoMasDespachado}\n\n";
+        resultado += $"DESPACHADOS POR TIPO\n";
+        resultado += $"Despachados por tipo = Basico: {despachoporTipos["Basico"]},Fragil: {despachoporTipos["Fragil"]},Pesado: {despachoporTipos["Pesado"]}\n";
+        resultado += $"Tipo mas despachado = {tipoMasDespachado}\n";
+        resultado += $"No Despachados = {productosNoDespachados}\n\n";
 
-        resultado += $" TIEMPOS\n";
-        resultado += $"tiempo_total_generacion={totalGenerados:F2} segundos\n";
-        resultado += $"tiempo_total_despacho={tiempoTotalDespachados:F2} segundos";
+        resultado += $"TIEMPOS\n";
+        resultado += $"Tiempo total generacion = {totalGenerados:F2} segundos\n";
+        resultado += $"Tiempo total despacho = {tiempoTotalDespachados:F2} segundos\n";
+        resultado += $"Tiempo total de generacion de productos = {TiempoTranscurrido:F2} segundos\n";
 
         Debug.Log(resultado);
 
