@@ -6,9 +6,11 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
-
+using System.Collections;
+using JetBrains.Annotations;
 public class UsaProducto : MonoBehaviour
 {
+    List<string> listaMetricas = new List<string>();
     public List<Producto> listaP = new List<Producto>();   // productos cargados desde el archivo
     public Stack<Producto> pilaProductos = new Stack<Producto>(); // productos generados (apilados)
     public TMP_Text TextoProductos;
@@ -23,7 +25,7 @@ public class UsaProducto : MonoBehaviour
     private bool despachando = false;
     private int totalDespachados = 0;
     private int totalGenerados = 0;
-    private int totalNoDespachados = 0;
+    private int totalNoDespachados;
     private float tiempoTotalDespachados = 0f;
     private Dictionary<string, int> despachoporTipos = new Dictionary<string, int>();
 
@@ -93,7 +95,7 @@ public class UsaProducto : MonoBehaviour
         }
     }
 
-    // Método que se llamará desde el botón "Iniciar"
+    //  botón "Iniciar"
     public void IniciarGeneracion()
     {
         ContadorActivo = true;
@@ -108,7 +110,7 @@ public class UsaProducto : MonoBehaviour
         }
     }
 
-    // Método opcional para detener
+    // Método para detener
     public void DetenerGeneracion()
     {
         ContadorActivo = false;
@@ -117,11 +119,11 @@ public class UsaProducto : MonoBehaviour
         totalNoDespachados = totalGenerados - totalDespachados; //no se en donde poner esto);
         StopAllCoroutines();
         calcularMostrarResultados();
-
+        Utilidades.guardarMetricas(listaMetricas);
     }
 
-    // Corutina que genera productos aleatorios cada segundo
-    private System.Collections.IEnumerator GenerarProductos()
+    // Corutina que genera productos aleatorios 
+    private IEnumerator GenerarProductos()
     {
         while (generando)
         {
@@ -194,6 +196,7 @@ public class UsaProducto : MonoBehaviour
         TextoProductos.text = mostrar;
     }
 
+
     public void calcularMostrarResultados()
     {
 
@@ -212,25 +215,28 @@ public class UsaProducto : MonoBehaviour
             }
         }
 
-        string resultado = $"RESULTADOS \n";
-        resultado += $"Total generados = {totalGenerados}\n";
-        resultado += $"Total despachados = {totalDespachados}\n";
-        resultado += $"Tamaño de la pila = {pilaProductos.Count}\n";
-        resultado += $"Tiempo promedio despacho = {promedioTiempo:F2}\n\n";
-        
+       
 
-        resultado += $"DESPACHADOS POR TIPO\n";
-        resultado += $"Despachados por tipo = Basico: {despachoporTipos["Basico"]},Fragil: {despachoporTipos["Fragil"]},Pesado: {despachoporTipos["Pesado"]}\n";
-        resultado += $"Tipo mas despachado = {tipoMasDespachado}\n";
-        resultado += $"No Despachados = {productosNoDespachados}\n\n";
+        string resultado = "RESULTADOS ";
+        resultado += "Total generados = " + totalGenerados + "";
+        resultado += "Total despachados =" + totalDespachados + "";
+        resultado += "Tamaño de la pila =" + pilaProductos.Count + "";
+        resultado += "Tiempo promedio despacho =" + promedioTiempo + "";
 
-        resultado += $"TIEMPOS\n";
-        resultado += $"Tiempo total generacion = {totalGenerados:F2} segundos\n";
-        resultado += $"Tiempo total despacho = {tiempoTotalDespachados:F2} segundos\n";
-        resultado += $"Tiempo total de generacion de productos = {TiempoTranscurrido:F2} segundos\n";
+        resultado += "DESPACHADOS POR TIPO";
+        resultado += "Despachados por tipo = Basico:" + despachoporTipos + "Fragil:" + despachoporTipos + "Pesado:" + despachoporTipos + "";
+        resultado += "Tipo mas despachado =" + tipoMasDespachado + "";
+        resultado += "No Despachados = + " + productosNoDespachados + "";
 
+        resultado += "TIEMPOS";
+        resultado += "Tiempo total generacion ="+ totalGenerados + ""; 
+        resultado += "Tiempo total despacho =" + tiempoTotalDespachados + " segundos";
+        resultado += "Tiempo total de generacion de productos =" + TiempoTranscurrido +  "segundos";
+        var lineas = resultado.Replace("\r\n", "\n").Split('\n');
         Debug.Log(resultado);
-
+        listaMetricas.Add(resultado);
+        listaMetricas.Clear();
+        listaMetricas.AddRange(lineas);
 
 
     }

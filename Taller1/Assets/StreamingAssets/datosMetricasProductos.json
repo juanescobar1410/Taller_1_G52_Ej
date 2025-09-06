@@ -1,0 +1,18 @@
+{
+    "Metricas": [
+        "RESULTADOS ",
+        "Total generados = 8",
+        "Total despachados =3",
+        "Tamaño de la pila =5",
+        "Tiempo promedio despacho =3,333333",
+        "DESPACHADOS POR TIPO",
+        "Despachados por tipo = Basico:System.Collections.Generic.Dictionary`2[System.String,System.Int32]Fragil:System.Collections.Generic.Dictionary`2[System.String,System.Int32]Pesado:System.Collections.Generic.Dictionary`2[System.String,System.Int32]",
+        "Tipo mas despachado =Basico",
+        "No Despachados = + 5",
+        "TIEMPOS",
+        "Tiempo total generacion =8",
+        "Tiempo total despacho =10 segundos",
+        "Tiempo total de generacion de productos =2,693262segundos",
+        ""
+    ]
+}
