@@ -15,6 +15,7 @@ public class UsaProducto : MonoBehaviour
     public TMP_Text TextoProductos;
     public TMP_Text TextoTamaño;
     public TMP_Text TextoDespachados;
+    public TMP_Text TextoGenerados;
     public TMP_Text TextoTope;
     public TMP_Text TextoContador;
 
@@ -219,7 +220,14 @@ public class UsaProducto : MonoBehaviour
             mostrar += item.ToString() + "\n";
         }
         TextoProductos.text = mostrar;
+        TextoTope.text = pilaProductos.Peek().ToString();
+        TextoDespachados.text = totalDespachados.ToString();
+        TextoGenerados.text = totalGenerados.ToString();
+        TextoTamaño.text = pilaProductos.Count.ToString();
     }
+
+
+
 
     public void calcularMostrarResultados()
     {
