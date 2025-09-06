@@ -17,8 +17,8 @@ public class UsaProducto : MonoBehaviour
     public TMP_Text TextoTope;
     public TMP_Text TextoContador;
 
-    public bool ContadorActivo;
-    public float TiempoTranscurrido;
+    private bool ContadorActivo;
+    private float TiempoTranscurrido;
     private bool generando = false;
     private bool despachando = false;
     private int totalDespachados = 0;
@@ -96,6 +96,7 @@ public class UsaProducto : MonoBehaviour
     // Método que se llamará desde el botón "Iniciar"
     public void IniciarGeneracion()
     {
+        ContadorActivo = true;
         if (!generando)
         {
             generando = true;
@@ -109,6 +110,7 @@ public class UsaProducto : MonoBehaviour
     // Método opcional para detener
     public void DetenerGeneracion()
     {
+        ContadorActivo = false;
         generando = false;
         despachando = false;
         totalNoDespachados = totalGenerados - totalDespachados; //no se en donde poner esto);
