@@ -11,8 +11,14 @@ public class UsaProducto : MonoBehaviour
 {
     public List<Producto> listaP = new List<Producto>();   // productos cargados desde el archivo
     public Stack<Producto> pilaProductos = new Stack<Producto>(); // productos generados (apilados)
-    public TMP_Text pilaText;
+    public TMP_Text TextoProductos;
+    public TMP_Text TextoTamaño;
+    public TMP_Text TextoDespachados;
+    public TMP_Text TextoTope;
+    public TMP_Text TextoContador;
 
+    private bool ContadorActivo;
+    private float TiempoTranscurrido;
     private bool generando = false;
     private bool despachando = false;
     private int totalDespachados = 0;
@@ -26,6 +32,7 @@ public class UsaProducto : MonoBehaviour
 
     public void Start()
     {
+        TiempoTranscurrido = 0f;
         CargaArchivo();
 
         despachoporTipos.Add("Basico", 0);
@@ -37,6 +44,15 @@ public class UsaProducto : MonoBehaviour
 
     public void Update()
     {
+        
+        if(ContadorActivo)
+        {
+            TiempoTranscurrido += Time.deltaTime;
+            int minutos = Mathf.FloorToInt(TiempoTranscurrido / 60f);
+            int segundos = Mathf.FloorToInt(TiempoTranscurrido % 60f);
+            TextoContador.text = $"{minutos:00}:{segundos:00}";
+        }
+
         if (despachando && Time.time >= tiempoSiguienteDespacho && pilaProductos.Count > 0)
         {
             DespacharProducto();
@@ -80,6 +96,8 @@ public class UsaProducto : MonoBehaviour
     // Método que se llamará desde el botón "Iniciar"
     public void IniciarGeneracion()
     {
+        ContadorActivo = true;
+        TiempoTranscurrido = 0f;
         if (!generando)
         {
             generando = true;
@@ -93,18 +111,13 @@ public class UsaProducto : MonoBehaviour
     // Método opcional para detener
     public void DetenerGeneracion()
     {
+        ContadorActivo = false;
         generando = false;
         despachando = false;
         totalNoDespachados = totalGenerados - totalDespachados; //no se en donde poner esto);
         StopAllCoroutines();
-        Debug.Log("Total Generados: " + totalGenerados);
-        Debug.Log("Total despachados: " + totalDespachados);
-        Debug.Log("Tiempo total despachado: " + tiempoTotalDespachados + " segundos");
-        Debug.Log("Total No Despachados: " + totalNoDespachados);
-        foreach (KeyValuePair<string, int> kvp in despachoporTipos)
-        {
-            Debug.Log("Total despachados por tipo: " + kvp.Key + " | Valor: " + kvp.Value);
-        }
+        calcularMostrarResultados();
+
     }
 
     // Corutina que genera productos aleatorios cada segundo
@@ -159,20 +172,9 @@ public class UsaProducto : MonoBehaviour
                 despachoporTipos[despachado.Tipo] = 1;
             }
 
-            Debug.Log("Producto despachado ? ID: " + despachado.Id +
-                " | Nombre: " + despachado.Nombre +
-                " | Tipo: " + despachado.Tipo +
-                " | Peso: " + despachado.Peso +
-                " | Precio: " + despachado.Precio +
-                " | Tiempo: " + despachado.Tiempo
-            );
-
             tiempoSiguienteDespacho = Time.time + 1f;
             ActualizarTextoPila();
 
-             
-
-            
 
         }
         else
@@ -189,9 +191,49 @@ public class UsaProducto : MonoBehaviour
         {
             mostrar += item.ToString() + "\n";
         }
-        pilaText.text = mostrar;
+        TextoProductos.text = mostrar;
     }
 
+    public void calcularMostrarResultados()
+    {
+
+        float promedioTiempo = totalDespachados > 0 ? tiempoTotalDespachados / totalDespachados : 0f;
+        float productosNoDespachados = totalGenerados - totalDespachados;
+
+        string tipoMasDespachado = "";
+        int maxDespachados = 0;
+
+        foreach (var kvp in despachoporTipos)
+        {
+            if (kvp.Value > maxDespachados)
+            {
+                maxDespachados = kvp.Value;
+                tipoMasDespachado = kvp.Key;
+            }
+        }
+
+        string resultado = $"RESULTADOS \n";
+        resultado += $"Total generados = {totalGenerados}\n";
+        resultado += $"Total despachados = {totalDespachados}\n";
+        resultado += $"Tamaño de la pila = {pilaProductos.Count}\n";
+        resultado += $"Tiempo promedio despacho = {promedioTiempo:F2}\n\n";
+        
+
+        resultado += $"DESPACHADOS POR TIPO\n";
+        resultado += $"Despachados por tipo = Basico: {despachoporTipos["Basico"]},Fragil: {despachoporTipos["Fragil"]},Pesado: {despachoporTipos["Pesado"]}\n";
+        resultado += $"Tipo mas despachado = {tipoMasDespachado}\n";
+        resultado += $"No Despachados = {productosNoDespachados}\n\n";
+
+        resultado += $"TIEMPOS\n";
+        resultado += $"Tiempo total generacion = {totalGenerados:F2} segundos\n";
+        resultado += $"Tiempo total despacho = {tiempoTotalDespachados:F2} segundos\n";
+        resultado += $"Tiempo total de generacion de productos = {TiempoTranscurrido:F2} segundos\n";
+
+        Debug.Log(resultado);
+
+
+
+    }
 
 
 }
