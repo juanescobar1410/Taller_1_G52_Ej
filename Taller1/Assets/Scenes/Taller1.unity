@@ -2080,7 +2080,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   listaP: []
-  pilaText: {fileID: 1907502528}
+  TextoProductos: {fileID: 1907502528}
+  "TextoTama\xF1o": {fileID: 2073386480}
+  TextoDespachados: {fileID: 50215453}
+  TextoTope: {fileID: 1839363716}
+  TextoContador: {fileID: 899136294}
 --- !u!1 &1839363714
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public class UsaProducto : MonoBehaviour
     public TMP_Text TextoProductos;
     public TMP_Text TextoTamaño;
     public TMP_Text TextoDespachados;
+    public TMP_Text TextoGenerados;
     public TMP_Text TextoTope;
     public TMP_Text TextoContador;
 
@@ -40,12 +41,13 @@ public class UsaProducto : MonoBehaviour
         despachoporTipos.Add("Pesado", 0);
         
         ActualizarTextoPila();
+        
     }
 
     public void Update()
     {
         
-        if(ContadorActivo)
+        if (ContadorActivo)
         {
             TiempoTranscurrido += Time.deltaTime;
             int minutos = Mathf.FloorToInt(TiempoTranscurrido / 60f);
@@ -114,7 +116,7 @@ public class UsaProducto : MonoBehaviour
         ContadorActivo = false;
         generando = false;
         despachando = false;
-        totalNoDespachados = totalGenerados - totalDespachados; //no se en donde poner esto);
+        totalNoDespachados = totalGenerados - totalDespachados; 
         StopAllCoroutines();
         calcularMostrarResultados();
 
@@ -192,7 +194,15 @@ public class UsaProducto : MonoBehaviour
             mostrar += item.ToString() + "\n";
         }
         TextoProductos.text = mostrar;
+        TextoTope.text = pilaProductos.Peek().ToString();
+        TextoDespachados.text = totalDespachados.ToString();
+        TextoGenerados.text = totalGenerados.ToString();
+        TextoTamaño.text = pilaProductos.Count.ToString();
     }
+
+    
+
+    
 
     public void calcularMostrarResultados()
     {
@@ -234,6 +244,9 @@ public class UsaProducto : MonoBehaviour
 
 
     }
+
+
+
 
 
 }
