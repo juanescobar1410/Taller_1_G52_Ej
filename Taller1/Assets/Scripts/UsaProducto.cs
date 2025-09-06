@@ -97,14 +97,8 @@ public class UsaProducto : MonoBehaviour
         despachando = false;
         totalNoDespachados = totalGenerados - totalDespachados; //no se en donde poner esto);
         StopAllCoroutines();
-        Debug.Log("Total Generados: " + totalGenerados);
-        Debug.Log("Total despachados: " + totalDespachados);
-        Debug.Log("Tiempo total despachado: " + tiempoTotalDespachados + " segundos");
-        Debug.Log("Total No Despachados: " + totalNoDespachados);
-        foreach (KeyValuePair<string, int> kvp in despachoporTipos)
-        {
-            Debug.Log("Total despachados por tipo: " + kvp.Key + " | Valor: " + kvp.Value);
-        }
+        calcularMostrarResultados();
+
     }
 
     // Corutina que genera productos aleatorios cada segundo
@@ -159,20 +153,8 @@ public class UsaProducto : MonoBehaviour
                 despachoporTipos[despachado.Tipo] = 1;
             }
 
-            Debug.Log("Producto despachado ? ID: " + despachado.Id +
-                " | Nombre: " + despachado.Nombre +
-                " | Tipo: " + despachado.Tipo +
-                " | Peso: " + despachado.Peso +
-                " | Precio: " + despachado.Precio +
-                " | Tiempo: " + despachado.Tiempo
-            );
-
             tiempoSiguienteDespacho = Time.time + 1f;
             ActualizarTextoPila();
-
-             
-
-            
 
         }
         else
@@ -209,10 +191,22 @@ public class UsaProducto : MonoBehaviour
             }
         }
 
-        string resultado = $"Total de productos generados: {totalGenerados}\n" +
-                           $"Total de productos despachados: {totalDespachados}\n" +
-                           $"Tiempo promedio de despacho: {promedioTiempo:F2} segundos\n" +
-                           $"Tipo de producto más despachado: {tipoMasDespachado} ({maxDespachados} unidades)";
+        string resultado = $" RESULTADOS \n";
+        resultado += $"total_generados={totalGenerados}\n";
+        resultado += $"total_despachados={totalDespachados}\n";
+        resultado += $"tamaño_de_la_pila={pilaProductos.Count}\n";
+        resultado += $"tiempo_promedio_despacho={promedioTiempo:F2}\n\n";
+
+        resultado += $" DESPACHADOS_POR_TIPO\n";
+        resultado += $"despachados_por_tipo=Basico:{despachoporTipos["Basico"]},Fragil:{despachoporTipos["Fragil"]},Pesado:{despachoporTipos["Pesado"]}\n";
+        resultado += $"tipo_mas_despachado={tipoMasDespachado}\n\n";
+
+        resultado += $" TIEMPOS\n";
+        resultado += $"tiempo_total_generacion={totalGenerados:F2} segundos\n";
+        resultado += $"tiempo_total_despacho={tiempoTotalDespachados:F2} segundos";
+
+        Debug.Log(resultado);
+
 
 
     }
