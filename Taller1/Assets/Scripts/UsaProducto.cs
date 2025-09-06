@@ -6,15 +6,15 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Collections;
 
 public class UsaProducto : MonoBehaviour
 {
-    public List<Producto> listaP = new List<Producto>();   // productos cargados desde el archivo
-    public Stack<Producto> pilaProductos = new Stack<Producto>(); // productos generados (apilados)
+    public List<Producto> listaP = new List<Producto>();   
+    public Stack<Producto> pilaProductos = new Stack<Producto>(); 
     public TMP_Text TextoProductos;
     public TMP_Text TextoTamaño;
     public TMP_Text TextoDespachados;
-    public TMP_Text TextoGenerados;
     public TMP_Text TextoTope;
     public TMP_Text TextoContador;
 
@@ -26,8 +26,10 @@ public class UsaProducto : MonoBehaviour
     private int totalGenerados = 0;
     private int totalNoDespachados = 0;
     private float tiempoTotalDespachados = 0f;
+    private float TiempoTotalGeneracion = 0f;
     private Dictionary<string, int> despachoporTipos = new Dictionary<string, int>();
 
+    private float tiempoInicioGeneracion = 0f;
     private float tiempoSiguienteDespacho = 0f;
 
 
@@ -39,14 +41,13 @@ public class UsaProducto : MonoBehaviour
         despachoporTipos.Add("Basico", 0);
         despachoporTipos.Add("Fragil", 0);
         despachoporTipos.Add("Pesado", 0);
-        
+
         ActualizarTextoPila();
-        
     }
 
     public void Update()
     {
-        
+
         if (ContadorActivo)
         {
             TiempoTranscurrido += Time.deltaTime;
@@ -95,22 +96,31 @@ public class UsaProducto : MonoBehaviour
         }
     }
 
-    // Método que se llamará desde el botón "Iniciar"
+    
     public void IniciarGeneracion()
     {
         ContadorActivo = true;
         TiempoTranscurrido = 0f;
+        tiempoInicioGeneracion = Time.time;
         if (!generando)
         {
             generando = true;
             despachando = true;
 
-            tiempoSiguienteDespacho = Time.time + 1f; 
+            totalNoDespachados = 0;
+            totalGenerados = 0;
+            totalDespachados = 0;
+            TiempoTotalGeneracion = 0f;
+            tiempoTotalDespachados = 0f;
+            pilaProductos.Clear();
+
+            tiempoInicioGeneracion = Time.time;
+            tiempoSiguienteDespacho = Time.time + 1f;
             StartCoroutine(GenerarProductos());
         }
     }
 
-    // Método opcional para detener
+    
     public void DetenerGeneracion()
     {
         ContadorActivo = false;
@@ -118,23 +128,24 @@ public class UsaProducto : MonoBehaviour
         despachando = false;
         totalNoDespachados = totalGenerados - totalDespachados; 
         StopAllCoroutines();
+
         calcularMostrarResultados();
 
     }
 
-    // Corutina que genera productos aleatorios cada segundo
-    private System.Collections.IEnumerator GenerarProductos()
+   
+    private IEnumerator GenerarProductos()
     {
         while (generando)
         {
-            int cantidad = Random.Range(1, 4); // entre 1 y 3 productos
+            int cantidad = Random.Range(1, 4); 
 
             for (int i = 0; i < cantidad; i++)
             {
-                // Elegir un producto aleatorio de la lista cargada
+               
                 Producto elegido = listaP[Random.Range(0, listaP.Count)];
 
-                // Crear una copia para no modificar el catálogo
+                
                 Producto copia = new Producto(
                     elegido.Id,
                     elegido.Nombre,
@@ -144,21 +155,23 @@ public class UsaProducto : MonoBehaviour
                     elegido.Tiempo
                 );
 
+                TiempoTotalGeneracion += copia.Tiempo;
+
                 pilaProductos.Push(copia);
                 totalGenerados++;
 
             }
 
             ActualizarTextoPila();
-            
-            yield return new WaitForSeconds(1f); // espera 1 segundo antes de repetir
+
+            yield return new WaitForSeconds(2f); 
         }
     }
 
     public void DespacharProducto()
     {
 
-        if(pilaProductos.Count > 0)
+        if (pilaProductos.Count > 0)
         {
             Producto despachado = pilaProductos.Pop();
             totalDespachados++;
@@ -174,7 +187,7 @@ public class UsaProducto : MonoBehaviour
                 despachoporTipos[despachado.Tipo] = 1;
             }
 
-            tiempoSiguienteDespacho = Time.time + 1f;
+            tiempoSiguienteDespacho = Time.time + despachado.Tiempo;
             ActualizarTextoPila();
 
 
@@ -194,21 +207,12 @@ public class UsaProducto : MonoBehaviour
             mostrar += item.ToString() + "\n";
         }
         TextoProductos.text = mostrar;
-        TextoTope.text = pilaProductos.Peek().ToString();
-        TextoDespachados.text = totalDespachados.ToString();
-        TextoGenerados.text = totalGenerados.ToString();
-        TextoTamaño.text = pilaProductos.Count.ToString();
     }
-
-    
-
-    
 
     public void calcularMostrarResultados()
     {
 
         float promedioTiempo = totalDespachados > 0 ? tiempoTotalDespachados / totalDespachados : 0f;
-        float productosNoDespachados = totalGenerados - totalDespachados;
 
         string tipoMasDespachado = "";
         int maxDespachados = 0;
@@ -227,15 +231,15 @@ public class UsaProducto : MonoBehaviour
         resultado += $"Total despachados = {totalDespachados}\n";
         resultado += $"Tamaño de la pila = {pilaProductos.Count}\n";
         resultado += $"Tiempo promedio despacho = {promedioTiempo:F2}\n\n";
-        
+
 
         resultado += $"DESPACHADOS POR TIPO\n";
         resultado += $"Despachados por tipo = Basico: {despachoporTipos["Basico"]},Fragil: {despachoporTipos["Fragil"]},Pesado: {despachoporTipos["Pesado"]}\n";
         resultado += $"Tipo mas despachado = {tipoMasDespachado}\n";
-        resultado += $"No Despachados = {productosNoDespachados}\n\n";
+        resultado += $"Productos no Despachados = {totalNoDespachados}\n\n";
 
         resultado += $"TIEMPOS\n";
-        resultado += $"Tiempo total generacion = {totalGenerados:F2} segundos\n";
+        resultado += $"Tiempo total generacion = {TiempoTotalGeneracion:F2} segundos\n";
         resultado += $"Tiempo total despacho = {tiempoTotalDespachados:F2} segundos\n";
         resultado += $"Tiempo total de generacion de productos = {TiempoTranscurrido:F2} segundos\n";
 
@@ -244,9 +248,6 @@ public class UsaProducto : MonoBehaviour
 
 
     }
-
-
-
 
 
 }
