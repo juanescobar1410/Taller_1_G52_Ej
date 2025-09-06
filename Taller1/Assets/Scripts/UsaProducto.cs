@@ -17,7 +17,7 @@ public class UsaProducto : MonoBehaviour
     public TMP_Text TextoTope;
     public TMP_Text TextoContador;
 
-    public GameObject PanelResultados;  
+    public GameObject PanelResultados;
     public TMP_Text TextoResultados;
 
     private bool ContadorActivo;
@@ -35,20 +35,20 @@ public class UsaProducto : MonoBehaviour
 
     public void Start()
     {
-        TiempoTranscurrido = 0f;    
+        TiempoTranscurrido = 0f;
         CargaArchivo();
 
         despachoporTipos.Add("Basico", 0);
         despachoporTipos.Add("Fragil", 0);
         despachoporTipos.Add("Pesado", 0);
-        
+
         ActualizarTextoPila();
     }
 
     public void Update()
     {
-        
-        if(ContadorActivo)
+
+        if (ContadorActivo)
         {
             TiempoTranscurrido += Time.deltaTime;
             int minutos = Mathf.FloorToInt(TiempoTranscurrido / 60f);
@@ -106,7 +106,7 @@ public class UsaProducto : MonoBehaviour
             generando = true;
             despachando = true;
 
-            tiempoSiguienteDespacho = Time.time + 1f; 
+            tiempoSiguienteDespacho = Time.time + 1f;
             StartCoroutine(GenerarProductos());
         }
     }
@@ -151,7 +151,7 @@ public class UsaProducto : MonoBehaviour
             }
 
             ActualizarTextoPila();
-            
+
             yield return new WaitForSeconds(1f); // espera 1 segundo antes de repetir
         }
     }
@@ -159,7 +159,7 @@ public class UsaProducto : MonoBehaviour
     public void DespacharProducto()
     {
 
-        if(pilaProductos.Count > 0)
+        if (pilaProductos.Count > 0)
         {
             Producto despachado = pilaProductos.Pop();
             totalDespachados++;
@@ -199,7 +199,7 @@ public class UsaProducto : MonoBehaviour
 
     private void ReiniciarSimulacion()
     {
-       
+
         totalGenerados = 0;
         totalDespachados = 0;
         totalNoDespachados = 0;
@@ -243,7 +243,7 @@ public class UsaProducto : MonoBehaviour
         resultado += $"Total despachados = {totalDespachados}\n";
         resultado += $"Tamaño de la pila = {pilaProductos.Count}\n";
         resultado += $"Tiempo promedio despacho = {promedioTiempo:F2}\n\n";
-        
+
 
         resultado += $"DESPACHADOS POR TIPO\n";
         resultado += $"Despachados por tipo = Basico: {despachoporTipos["Basico"]},Fragil: {despachoporTipos["Fragil"]},Pesado: {despachoporTipos["Pesado"]}\n";
