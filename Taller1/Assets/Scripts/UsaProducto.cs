@@ -35,7 +35,7 @@ public class UsaProducto : MonoBehaviour
 
     public void Start()
     {
-        TiempoTranscurrido = 0f;
+        TiempoTranscurrido = 0f;    
         CargaArchivo();
 
         despachoporTipos.Add("Basico", 0);
@@ -100,7 +100,7 @@ public class UsaProducto : MonoBehaviour
     public void IniciarGeneracion()
     {
         ContadorActivo = true;
-        TiempoTranscurrido = 0f;
+        ReiniciarSimulacion();
         if (!generando)
         {
             generando = true;
@@ -197,6 +197,26 @@ public class UsaProducto : MonoBehaviour
         TextoProductos.text = mostrar;
     }
 
+    private void ReiniciarSimulacion()
+    {
+       
+        totalGenerados = 0;
+        totalDespachados = 0;
+        totalNoDespachados = 0;
+        tiempoTotalDespachados = 0f;
+        TiempoTranscurrido = 0f;
+
+        pilaProductos.Clear();
+
+        despachoporTipos["Basico"] = 0;
+        despachoporTipos["Fragil"] = 0;
+        despachoporTipos["Pesado"] = 0;
+
+        ActualizarTextoPila();
+        if (TextoContador != null)
+            TextoContador.text = "00:00";
+    }
+
     public void calcularMostrarResultados()
     {
 
@@ -214,6 +234,9 @@ public class UsaProducto : MonoBehaviour
                 tipoMasDespachado = kvp.Key;
             }
         }
+
+
+
 
         string resultado = $"RESULTADOS \n";
         resultado += $"Total generados = {totalGenerados}\n";
