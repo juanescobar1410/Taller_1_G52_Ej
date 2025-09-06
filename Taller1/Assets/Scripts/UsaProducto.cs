@@ -11,8 +11,14 @@ public class UsaProducto : MonoBehaviour
 {
     public List<Producto> listaP = new List<Producto>();   // productos cargados desde el archivo
     public Stack<Producto> pilaProductos = new Stack<Producto>(); // productos generados (apilados)
-    public TMP_Text pilaText;
+    public TMP_Text TextoProductos;
+    public TMP_Text TextoTamaño;
+    public TMP_Text TextoDespachados;
+    public TMP_Text TextoTope;
+    public TMP_Text TextoContador;
 
+    public bool ContadorActivo;
+    public float TiempoTranscurrido;
     private bool generando = false;
     private bool despachando = false;
     private int totalDespachados = 0;
@@ -26,6 +32,7 @@ public class UsaProducto : MonoBehaviour
 
     public void Start()
     {
+        TiempoTranscurrido = 0f;
         CargaArchivo();
 
         despachoporTipos.Add("Basico", 0);
@@ -37,6 +44,15 @@ public class UsaProducto : MonoBehaviour
 
     public void Update()
     {
+        
+        if(ContadorActivo)
+        {
+            TiempoTranscurrido += Time.deltaTime;
+            int minutos = Mathf.FloorToInt(TiempoTranscurrido / 60f);
+            int segundos = Mathf.FloorToInt(TiempoTranscurrido % 60f);
+            TextoContador.text = $"{minutos:00}:{segundos:00}";
+        }
+
         if (despachando && Time.time >= tiempoSiguienteDespacho && pilaProductos.Count > 0)
         {
             DespacharProducto();
@@ -156,6 +172,7 @@ public class UsaProducto : MonoBehaviour
             tiempoSiguienteDespacho = Time.time + 1f;
             ActualizarTextoPila();
 
+
         }
         else
         {
@@ -171,7 +188,7 @@ public class UsaProducto : MonoBehaviour
         {
             mostrar += item.ToString() + "\n";
         }
-        pilaText.text = mostrar;
+        TextoProductos.text = mostrar;
     }
 
     public void calcularMostrarResultados()
