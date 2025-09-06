@@ -131,8 +131,14 @@ public class UsaProducto : MonoBehaviour
         }
     }
 
+    public void CerrarPanelResultados()
+    {
+        if (PanelResultados != null)
+        {
+            PanelResultados.SetActive(false);
+        }
+    }
 
-    
     public void DetenerGeneracion()
     {
         ContadorActivo = false;
@@ -180,6 +186,8 @@ public class UsaProducto : MonoBehaviour
         }
     }
 
+
+
     public void DespacharProducto()
     {
 
@@ -208,6 +216,8 @@ public class UsaProducto : MonoBehaviour
         {
             Debug.Log("No hay productos para despachar.");
         }
+
+    
 
     }
     public void ActualizarTextoPila()
