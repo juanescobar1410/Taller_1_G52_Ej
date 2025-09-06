@@ -1,17 +1,19 @@
 
 using PackageProductos;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using System.Collections;
 
 public class UsaProducto : MonoBehaviour
 {
     public List<Producto> listaP = new List<Producto>();   
-    public Stack<Producto> pilaProductos = new Stack<Producto>(); 
+    public Stack<Producto> pilaProductos = new Stack<Producto>();
+    List<string> listaMetricas = new List<string>();
     public TMP_Text TextoProductos;
     public TMP_Text TextoTamaño;
     public TMP_Text TextoDespachados;
@@ -57,7 +59,7 @@ public class UsaProducto : MonoBehaviour
             TiempoTranscurrido += Time.deltaTime;
             int minutos = Mathf.FloorToInt(TiempoTranscurrido / 60f);
             int segundos = Mathf.FloorToInt(TiempoTranscurrido % 60f);
-            TextoContador.text = $"{minutos:00}:{segundos:00}";
+            TextoContador.text = " Minutos " + minutos + " : " + segundos + " Segundos ";
         }
 
         if (despachando && Time.time >= tiempoSiguienteDespacho && pilaProductos.Count > 0)
@@ -149,6 +151,8 @@ public class UsaProducto : MonoBehaviour
         StopAllCoroutines();
 
         calcularMostrarResultados();
+        
+        Utilidades.guardarMetricas(listaMetricas);
 
     }
 
@@ -230,10 +234,14 @@ public class UsaProducto : MonoBehaviour
             mostrar += item.ToString() + "\n";
         }
         TextoProductos.text = mostrar;
-        TextoTope.text = pilaProductos.Peek().ToString();
+       
         TextoDespachados.text = totalDespachados.ToString();
         TextoGenerados.text = totalGenerados.ToString();
         TextoTamaño.text = pilaProductos.Count.ToString();
+        if (pilaProductos.Count > 0)
+            TextoTope.text = pilaProductos.Peek().ToString();
+        else
+            TextoTope.text = "Pila vacía";
     }
 
 
@@ -256,22 +264,29 @@ public class UsaProducto : MonoBehaviour
             }
         }
 
-        string resultado = $"RESULTADOS \n";
-        resultado += $"Total generados = {totalGenerados}\n";
-        resultado += $"Total despachados = {totalDespachados}\n";
-        resultado += $"Tamaño de la pila = {pilaProductos.Count}\n";
-        resultado += $"Tiempo promedio despacho = {promedioTiempo:F2}\n\n";
 
+        string resultado = "RESULTADOS\n ";
+        resultado += "Total generados : " + totalGenerados + "\n";
+        resultado += "Total despachados :" + totalDespachados + "\n";
+        resultado += "Tamaño de la pila : " + pilaProductos.Count + "\n";
+        resultado += "Tiempo promedio despacho : " + promedioTiempo + "\n";
 
-        resultado += $"DESPACHADOS POR TIPO\n";
-        resultado += $"Despachados por tipo = Basico: {despachoporTipos["Basico"]},Fragil: {despachoporTipos["Fragil"]},Pesado: {despachoporTipos["Pesado"]}\n";
-        resultado += $"Tipo mas despachado = {tipoMasDespachado}\n";
-        resultado += $"Productos no Despachados = {totalNoDespachados}\n\n";
+        resultado += "DESPACHADOS POR TIPO\n ";
+        resultado += "Despachados por tipo : Basico: " + despachoporTipos["Basico"]
+              + ", Fragil: " + despachoporTipos["Fragil"]
+              + ", Pesado: " + despachoporTipos["Pesado"] + "\n";
+        resultado += "Tipo mas despachado : " + tipoMasDespachado + "\n";
+        resultado += "No Despachados : " + totalNoDespachados + "\n";
 
-        resultado += $"TIEMPOS\n";
-        resultado += $"Tiempo total de generacion = {TiempoTotalGeneracion:F2} segundos\n";
-        resultado += $"Tiempo total despacho = {tiempoTotalDespachados:F2} segundos\n";
-        resultado += $"Tiempo total de generacion de productos = {TiempoTranscurrido:F2} segundos\n";
+        resultado += "TIEMPOS\n";
+        resultado += "Tiempo total generacion : " + totalGenerados + "\n";
+        resultado += "Tiempo total despacho : " + tiempoTotalDespachados + " segundos \n";
+        resultado += "Tiempo total de generacion de productos : " + TiempoTranscurrido + " segundos \n";
+        var lineas = resultado.Split('\n');
+        Debug.Log(resultado);
+        listaMetricas.Add(resultado);
+        listaMetricas.Clear();
+        listaMetricas.AddRange(lineas);
 
         if (TextoResultados != null)
             TextoResultados.text = resultado;
@@ -285,3 +300,4 @@ public class UsaProducto : MonoBehaviour
 
 
 }
+
