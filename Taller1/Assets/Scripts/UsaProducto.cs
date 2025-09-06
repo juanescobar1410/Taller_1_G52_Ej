@@ -18,6 +18,9 @@ public class UsaProducto : MonoBehaviour
     public TMP_Text TextoTope;
     public TMP_Text TextoContador;
 
+    public GameObject PanelResultados;
+    public TMP_Text TextoResultados;
+
     private bool ContadorActivo;
     private float TiempoTranscurrido;
     private bool generando = false;
@@ -99,6 +102,14 @@ public class UsaProducto : MonoBehaviour
     
     public void IniciarGeneracion()
     {
+  
+        if (PanelResultados != null)
+        {
+            PanelResultados.SetActive(false);
+            if (TextoResultados != null)
+                TextoResultados.text = "";
+        }
+
         ContadorActivo = true;
         TiempoTranscurrido = 0f;
         tiempoInicioGeneracion = Time.time;
@@ -119,6 +130,7 @@ public class UsaProducto : MonoBehaviour
             StartCoroutine(GenerarProductos());
         }
     }
+
 
     
     public void DetenerGeneracion()
@@ -243,7 +255,11 @@ public class UsaProducto : MonoBehaviour
         resultado += $"Tiempo total despacho = {tiempoTotalDespachados:F2} segundos\n";
         resultado += $"Tiempo total de generacion de productos = {TiempoTranscurrido:F2} segundos\n";
 
-        Debug.Log(resultado);
+        if (TextoResultados != null)
+            TextoResultados.text = resultado;
+
+        if (PanelResultados != null)
+            PanelResultados.SetActive(true);
 
 
 
